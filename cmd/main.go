@@ -13,6 +13,7 @@ import (
 func main() {
 	// Get path to assets from flag.
 	assetsDir := flag.String("assetsDir", "../assets", "defines the path to asset directory")
+	port := flag.String("port", ":8080", "sets the port to serve")
 	flag.Parse()
 	// Instantiate DB pool. I've done some abstractions here using interfaces
 	// and custom structs (rather than using database/sql itself). Why?
@@ -38,5 +39,5 @@ func main() {
 	originsOk := handlers.AllowedOrigins([]string{"*"})
 	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
 
-	log.Fatal(http.ListenAndServe(":80", handlers.CORS(originsOk, headersOk, methodsOk)(m)))
+	log.Fatal(http.ListenAndServe(*port, handlers.CORS(originsOk, headersOk, methodsOk)(m)))
 }
