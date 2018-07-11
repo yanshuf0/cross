@@ -3,11 +3,11 @@ package data
 import (
 	"database/sql"
 	"flag"
+	"log"
 	"os"
 
 	// imported to act as a driver for the db.
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/zls0/sh-cross-sell/pkg/models"
 )
 
 // assets dir is a package scoped variable. It is accessed before the env
@@ -18,8 +18,14 @@ var assetsDir string
 // Datastore is an interface with data access methods that will
 // allow persistence.
 type Datastore interface {
-	CrossSellMachines(int) ([]models.Pod, error)
-	CrossSellPods(int) ([]models.Pod, error)
+	CrossSellMachines(int) ([]Pod, error)
+	CrossSellPods(int) ([]Pod, error)
+	initDB() error
+	Machines(int) ([]CoffeeMachine, error)
+	Pods(int, int) ([]Pod, error)
+	insertPod(string) error
+	insertMachine(string) error
+	parseProducts() error
 }
 
 // DB is type which will implement Datastore and will be the receiver
@@ -33,7 +39,9 @@ func NewDB() (*DB, error) {
 	// gets assetsDir flag.
 	assetsDir = flag.Lookup("assetsDir").Value.(flag.Getter).Get().(string)
 	// Recreates data on build.
-	os.Remove(assetsDir + "/data.db")
+	if err := os.Remove(assetsDir + "/data.db"); err != nil {
+		log.Printf("either the this is this first time creating the db file or the assetDir is not set properly")
+	}
 
 	db, err := sql.Open("sqlite3", assetsDir+"/data.db")
 	if err != nil {
@@ -43,6 +51,8 @@ func NewDB() (*DB, error) {
 		return nil, err
 	}
 	newDB := &DB{db}
-	newDB.initDB()
+	if err = newDB.initDB(); err != nil {
+		return nil, err
+	}
 	return newDB, nil
 }

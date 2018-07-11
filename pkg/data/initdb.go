@@ -11,23 +11,23 @@ import (
 // InitDB will create the necessary records and tables for the the sqlite
 // database. This will ensure the app is easy to run from others computers.
 func (db *DB) initDB() error {
-	machineTable, err := db.Prepare(coffeeQ)
+	machineTable, err := db.Prepare(coffeeCreate)
 	if err != nil {
 		return err
 	}
-	flavorTable, err := db.Prepare(flavorQ)
+	flavorTable, err := db.Prepare(flavorCreate)
 	if err != nil {
 		return err
 	}
-	sizeTable, err := db.Prepare(sizeQ)
+	sizeTable, err := db.Prepare(sizeCreate)
 	if err != nil {
 		return err
 	}
-	modelTable, err := db.Prepare(modelQ)
+	modelTable, err := db.Prepare(modelCreate)
 	if err != nil {
 		return err
 	}
-	podTable, err := db.Prepare(podQ)
+	podTable, err := db.Prepare(podCreate)
 	if err != nil {
 		return err
 	}
@@ -53,7 +53,7 @@ func (db *DB) initDB() error {
 		if err != nil {
 			return err
 		}
-		if _, err = stmt.Exec(i, v); err != nil {
+		if _, err = stmt.Exec(i+1, v); err != nil {
 			return err
 		}
 	}
@@ -64,7 +64,7 @@ func (db *DB) initDB() error {
 		if err != nil {
 			return err
 		}
-		if _, err = stmt.Exec(i, v); err != nil {
+		if _, err = stmt.Exec(i+1, v); err != nil {
 			return err
 		}
 	}
@@ -75,7 +75,7 @@ func (db *DB) initDB() error {
 		if err != nil {
 			return err
 		}
-		if _, err = stmt.Exec(i, v); err != nil {
+		if _, err = stmt.Exec(i+1, v); err != nil {
 			return err
 		}
 	}
