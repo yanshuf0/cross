@@ -1,0 +1,46 @@
+package data
+
+const flavorQ = `
+CREATE TABLE IF NOT EXISTS Flavor (
+	FlavorID	INTEGER NOT NULL,
+	FlavorName	TEXT,
+	PRIMARY KEY(FlavorID)
+)`
+
+const sizeQ = `
+CREATE TABLE IF NOT EXISTS Size (
+	SizeID	INTEGER NOT NULL,
+	SizeName	TEXT,
+	PRIMARY KEY(SizeID)
+)`
+
+const modelQ = `
+CREATE TABLE IF NOT EXISTS Model (
+	ModelID INTEGER NOT NULL,
+	ModelName TEXT,
+	PRIMARY KEY(ModelID)
+)`
+
+const coffeeQ = `
+CREATE TABLE IF NOT EXISTS CoffeeMachine (
+	CoffeeMachineID	INTEGER NOT NULL,
+	SizeID	INTEGER,
+	SKU	TEXT,
+	ModelID	INTEGER,
+	WaterLine	INTEGER,
+	PRIMARY KEY(CoffeeMachineID),
+	FOREIGN KEY(SizeID) REFERENCES Size(SizeID),
+	FOREIGN KEY(ModelID) REFERENCES Model(ModelID)
+)`
+
+const podQ = `
+CREATE TABLE IF NOT EXISTS Pod (
+	PodID	INTEGER NOT NULL,
+	SizeID	INTEGER,
+	FlavorID	INTEGER,
+	SKU	TEXT,
+	Quantity	INTEGER,
+	PRIMARY KEY(PodID),
+	FOREIGN KEY(FlavorID) REFERENCES Flavor(FlavorID),
+	FOREIGN KEY(SizeID) REFERENCES Size(SizeID)
+)`
