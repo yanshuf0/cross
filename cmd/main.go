@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/handlers"
 	"github.com/yanshuf0/cross/pkg/data"
 	"github.com/yanshuf0/cross/pkg/handle"
 )
@@ -31,5 +32,11 @@ func main() {
 	// over packages like fasthttp or even julienschmidt's http router since they
 	// break the http Handler model (Julien to a lesser extent).
 	m := handle.InitMux(env)
-	http.ListenAndServe(":8080", m)
+
+	// Allow Cors.
+	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With"})
+	originsOk := handlers.AllowedOrigins([]string{"*"})
+	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
+
+	http.ListenAndServe(":8080", handlers.CORS(originsOk, headersOk, methodsOk)(m))
 }

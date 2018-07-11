@@ -19,8 +19,3 @@
 .dashboard-card-content {
   text-align: center;
 }
-
-.machine-size-image {
-  max-width: 16em;
-  object-fit: contain;
-}

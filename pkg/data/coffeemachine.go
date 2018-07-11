@@ -9,8 +9,8 @@ type CoffeeMachine struct {
 	SizeName        string `json:"size_name,omitempty"`
 	SKU             string `json:"sku,omitempty"`
 	ModelID         int    `json:"model_id,omitempty"`
-	ModelName       string `json:"description,omitempty"`
-	WaterLine       bool   `json:"waterline,omitempty"`
+	ModelName       string `json:"model_name,omitempty"`
+	WaterLine       bool   `json:"water_line,omitempty"`
 }
 
 // Machines returns all machines.

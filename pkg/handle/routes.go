@@ -14,11 +14,11 @@ func InitMux(env *Env) *mux.Router {
 	// Declare the api subrouter.
 	api := m.PathPrefix("/api").Subrouter()
 	// Register coffee machine routes.
-	api.HandleFunc("/product/machine", env.coffeeMachines).Methods("GET")
-	api.HandleFunc("/cross/machine", env.crossSellCoffeeMachines).Methods("GET")
+	api.HandleFunc("/product/machine", env.coffeeMachines).Methods("GET", "OPTIONS")
+	api.HandleFunc("/cross/machine", env.crossSellCoffeeMachines).Methods("GET", "OPTIONS")
 	// Register pod routes.
-	api.HandleFunc("/product/pod", env.pods).Methods("GET")
-	api.HandleFunc("/cross/pod", env.crossSellPods).Methods("GET")
+	api.HandleFunc("/product/pod", env.pods).Methods("GET", "OPTIONS")
+	api.HandleFunc("/cross/pod", env.crossSellPods).Methods("GET", "OPTIONS")
 	// Handle spa routing.
 	spa := http.StripPrefix("/", http.FileServer(http.Dir("../web/cross-spa/dist/cross-spa")))
 	m.PathPrefix("/").Handler(spa)

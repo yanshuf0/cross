@@ -1,20 +1,167 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
+<app-nav-bar (getMachines)="getMachines()" (getPods)="getPods()"></app-nav-bar>
+<div *ngIf="itemSelected && selectedMachine" class="grid-container">
+    <h1 class="mat-h1">Selected Machine</h1>
+    <mat-grid-list cols="2" rowHeight="350px">
+      <mat-grid-tile [colspan]="2" [rowspan]="1">
+        <mat-card class="dashboard-card">
+          <mat-card-header>
+            <mat-card-title>
+              {{selectedMachine.size_name + ' | ' + selectedMachine.model_name + (selectedMachine.water_line ? ' | Water Line Compatible' : '')}}
+              <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu" xPosition="before">
+                <button mat-menu-item>Do Nothing</button>
+              </mat-menu>
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="dashboard-card-content">
+            {{selectedMachine.sku}}
+          </mat-card-content>
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+  <div *ngIf="itemSelected && selectedPod" class="grid-container">
+      <h1 class="mat-h1">Selected Pod</h1>
+      <mat-grid-list cols="2" rowHeight="350px">
+        <mat-grid-tile [colspan]="2" [rowspan]="1">
+          <mat-card class="dashboard-card">
+            <mat-card-header>
+              <mat-card-title>
+                {{selectedPod.size_name + ' | ' + selectedPod.flavor_name + ' | ' + selectedPod.quantity}}
+                <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu" xPosition="before">
+                  <button mat-menu-item>Do Nothing</button>
+                </mat-menu>
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="dashboard-card-content">
+              {{selectedPod.sku}}
+            </mat-card-content>
+          </mat-card>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+  <div *ngIf="displayMachineSizes && !itemSelected" class="grid-container">
+      <h1 class="mat-h1">Select a Machine</h1>
+      <mat-grid-list cols="2" rowHeight="350px">
+        <mat-grid-tile *ngFor="let m of displayMachines" [colspan]="1" [rowspan]="1">
+          <mat-card class="dashboard-card">
+            <mat-card-header>
+              <mat-card-title>
+                  {{m.size_name + ' | ' + m.model_name + (m.water_line ? ' | Water Line Compatible' : '')}}
+                <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu" xPosition="before">
+                  <button mat-menu-item (click)="selectMachine(m.coffee_machine_id)">Select</button>
+                </mat-menu>
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="dashboard-card-content">
+              {{m.sku}}
+            </mat-card-content>
+          </mat-card>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+<div *ngIf="showMachines && !itemSelected && !displayMachineSizes" class="grid-container">
+    <h1 class="mat-h1">Select a Machine Size</h1>
+    <mat-grid-list cols="2" rowHeight="350px">
+      <mat-grid-tile *ngFor="let size of machineSizes" [colspan]="size.cols" [rowspan]="size.rows">
+        <mat-card class="dashboard-card">
+          <mat-card-header>
+            <mat-card-title>
+              {{size.size_name}}
+              <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu" xPosition="before">
+                <button mat-menu-item (click)="selectMachineSize(size.size_id)">Select</button>
+              </mat-menu>
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="dashboard-card-content">
+            <img class="machine-size-image" [src]="assetFolder + '/' + size.size_name + '.jpeg'"/>
+          </mat-card-content>
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+
+  <div *ngIf="showDisplayPods && !itemSelected" class="grid-container">
+      <h1 class="mat-h1">Select a Pod</h1>
+      <mat-grid-list cols="2" rowHeight="350px">
+        <mat-grid-tile *ngFor="let pod of displayPods" [colspan]="1" [rowspan]="1">
+          <mat-card class="dashboard-card">
+            <mat-card-header>
+              <mat-card-title>
+                {{pod.size_name + ' | ' + pod.flavor_name + ' | ' + (pod.quantity / 12) + ' Dozen'}}
+                <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu" xPosition="before">
+                  <button mat-menu-item (click)="selectPod(pod.pod_id)" >Select</button>
+                </mat-menu>
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="dashboard-card-content">
+              <div>{{pod.sku}}</div>
+            </mat-card-content>
+          </mat-card>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+
+    <div *ngIf="showPods && !itemSelected" class="grid-container">
+        <h1 class="mat-h1">Select a Pod Size</h1>
+        <mat-grid-list cols="2" rowHeight="350px">
+          <mat-grid-tile *ngFor="let s of podSizes" [colspan]="1" [rowspan]="1">
+            <mat-card class="dashboard-card">
+              <mat-card-header>
+                <mat-card-title>
+                    {{s.size_name}}
+                  <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #menu="matMenu" xPosition="before">
+                    <button mat-menu-item (click)="selectPodSize(s.size_id)">Select</button>
+                  </mat-menu>
+                </mat-card-title>
+              </mat-card-header>
+              <mat-card-content class="dashboard-card-content">
+                try this size!
+              </mat-card-content>
+            </mat-card>
+          </mat-grid-tile>
+        </mat-grid-list>
+      </div>
+
+      <div *ngIf="itemSelected" class="grid-container">
+          <h1 class="mat-h1">Cross Sell</h1>
+          <mat-grid-list cols="2" rowHeight="350px">
+            <mat-grid-tile *ngFor="let pod of crossPods" [colspan]="1" [rowspan]="1">
+              <mat-card class="dashboard-card">
+                <mat-card-header>
+                  <mat-card-title>
+                    {{pod.size_name + ' | ' + pod.flavor_name + ' | ' + (pod.quantity / 12) + ' Dozen'}}
+                    <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu" xPosition="before">
+                      <button mat-menu-item (click)="selectPod(pod.pod_id)" >Expand</button>
+                    </mat-menu>
+                  </mat-card-title>
+                </mat-card-header>
+                <mat-card-content class="dashboard-card-content">
+                  <div>{{pod.sku}}</div>
+                  Go ahead and buy these pods as well, life is short!
+                </mat-card-content>
+              </mat-card>
+            </mat-grid-tile>
+          </mat-grid-list>
+        </div>
 

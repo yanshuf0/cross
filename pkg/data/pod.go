@@ -71,15 +71,14 @@ func (db *DB) CrossSellPods(id int) ([]Pod, error) {
 		return nil, err
 	}
 	for rows.Next() {
-		pod := new(Pod)
 		if err = rows.Scan(&pod.PodID, &pod.FlavorID, &pod.FlavorName,
 			&pod.SizeID, &pod.SizeName, &pod.SKU, &pod.Quantity); err != nil {
 			return nil, err
 		}
-		pods = append(pods, *pod)
 	}
 
-	rows, err = db.Query(podQ+" WHERE Pod.FlavorID = ? AND PodID != ?", pod.FlavorID, pod.PodID)
+	rows, err = db.Query(podQ+" WHERE Pod.FlavorID = ? AND Pod.SizeID = ? AND PodID != ?",
+		pod.FlavorID, pod.SizeID, pod.PodID)
 	if err != nil {
 		return nil, err
 	}
