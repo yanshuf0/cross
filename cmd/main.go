@@ -25,13 +25,7 @@ func main() {
 	}
 
 	env := &handle.Env{DB: db, AssetsDir: assetsDir}
-	// Initialize mux. I've used gorilla since one of the criteria mentioned
-	// was scalability, in a large monolithic server, a routing lib would be
-	// very important. However if this were to be implemented as a microservice
-	// or was a smaller application I would prefer to stick to the standard library.
-	// my preference for the standard library often leads to choosing gorilla/mux
-	// over packages like fasthttp or even julienschmidt's http router since they
-	// break the http Handler model (Julien to a lesser extent).
+	// Initialize mux.
 	m := handle.InitMux(env)
 
 	// Allow Cors.
