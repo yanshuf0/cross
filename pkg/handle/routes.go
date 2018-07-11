@@ -20,7 +20,7 @@ func InitMux(env *Env) *mux.Router {
 	api.HandleFunc("/product/pod", env.pods).Methods("GET", "OPTIONS")
 	api.HandleFunc("/cross/pod", env.crossSellPods).Methods("GET", "OPTIONS")
 	// Handle spa routing.
-	spa := http.StripPrefix("/", http.FileServer(http.Dir("../web/cross-spa/dist/cross-spa")))
+	spa := http.StripPrefix("/", http.FileServer(http.Dir(*env.AssetsDir+"/cross-spa")))
 	m.PathPrefix("/").Handler(spa)
 
 	return m
