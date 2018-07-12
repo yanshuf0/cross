@@ -14,6 +14,12 @@ interface SizeCategory {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  podSrc = [
+    'assets/coffee-pod1.jpeg',
+    'assets/coffee-pod2.jpeg',
+    'assets/coffee-pod3.jpeg',
+    'assets/coffee-pod4.jpeg'
+  ];
   itemSelected: boolean;
   machineSizes: SizeCategory[] = [];
   podSizes: SizeCategory[] = [];
@@ -43,7 +49,7 @@ export class AppComponent {
       if (!this.podSizes.find(s => s.size_id === p.size_id)) {
         this.podSizes.push({
           size_id: p.size_id,
-          size_name: p.size_name.toUpperCase(),
+          size_name: p.size_name,
           cols: 1,
           rows: 1
         });
@@ -97,7 +103,9 @@ export class AppComponent {
   async selectMachineSize(size_id: number) {
     this.displayMachineSizes = true;
     this.selectingMachines = false;
-    this.displayMachines = await this.machineService.getMachines(size_id).toPromise();
+    this.displayMachines = await this.machineService
+      .getMachines(size_id)
+      .toPromise();
   }
 
   async selectPodSize(size_id: number) {

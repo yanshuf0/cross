@@ -16,12 +16,11 @@ import {
   MatCardModule,
   MatMenuModule
 } from '@angular/material';
-import { DashComponent } from './dash/dash.component';
 import { PodService } from '../services/pods.service';
 import { MachineService } from '../services/machines.service';
 
 @NgModule({
-  declarations: [AppComponent, NavBarComponent, DashComponent],
+  declarations: [AppComponent, NavBarComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
