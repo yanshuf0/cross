@@ -127,20 +127,15 @@ func (db *DB) insertMachine(m string) error {
 		water = false
 	}
 	sizeName := strings.Split(m, " ")[2]
-	rows, err := db.Query("SELECT SizeID FROM Size WHERE SizeName = ?", sizeName)
-	if err != nil {
+	if err := db.QueryRow("SELECT SizeID FROM Size WHERE SizeName = ?",
+		sizeName).Scan(&sizeID); err != nil {
 		return err
 	}
-	for rows.Next() {
-		rows.Scan(&sizeID)
-	}
+
 	modelName := strings.Trim(strings.Split(m, ",")[1], " ")
-	rows, err = db.Query("SELECT ModelID FROM Model WHERE ModelName = ?", modelName)
-	if err != nil {
+	if err := db.QueryRow("SELECT ModelID FROM Model WHERE ModelName = ?",
+		modelName).Scan(&modelID); err != nil {
 		return err
-	}
-	for rows.Next() {
-		rows.Scan(&modelID)
 	}
 
 	stmt, err := db.Prepare("INSERT INTO CoffeeMachine (SKU, ModelID, WaterLine, SizeID) VALUES (?, ?, ?, ?)")
@@ -165,22 +160,17 @@ func (db *DB) insertPod(p string) error {
 		return err
 	}
 	flavorName := strings.Trim(parts[len(parts)-1], " ")
-	rows, err := db.Query("SELECT FlavorID FROM Flavor WHERE FlavorName = ?", flavorName)
-	if err != nil {
+	if err := db.QueryRow("SELECT FlavorID FROM Flavor WHERE FlavorName = ?",
+		flavorName).Scan(&flavorID); err != nil {
 		return err
-	}
-	for rows.Next() {
-		rows.Scan(&flavorID)
 	}
 	quantity := dozens * 12
 	sizeName := strings.Split(p, " ")[2]
-	rows, err = db.Query("SELECT SizeID FROM Size WHERE SizeName = ?", sizeName)
-	if err != nil {
+	if err := db.QueryRow("SELECT SizeID FROM Size WHERE SizeName = ?",
+		sizeName).Scan(&sizeID); err != nil {
 		return err
 	}
-	for rows.Next() {
-		rows.Scan(&sizeID)
-	}
+
 	stmt, err := db.Prepare("INSERT INTO Pod (SKU, FlavorID, Quantity, SizeID) VALUES (?, ?, ?, ?)")
 	if err != nil {
 		return err

@@ -47,6 +47,7 @@ func (db *DB) Pods(flavorID int, sizeID int) ([]Pod, error) {
 			return nil, err
 		}
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		pod := new(Pod)
@@ -66,22 +67,19 @@ func (db *DB) CrossSellPods(id int) ([]Pod, error) {
 	var pods []Pod
 	var pod Pod
 
-	rows, err := db.Query(podQ+" WHERE PodID = ?", id)
-	if err != nil {
+	if err := db.QueryRow(podQ+" WHERE PodID = ?", id).Scan(&pod.PodID,
+		&pod.FlavorID, &pod.FlavorName, &pod.SizeID, &pod.SizeName,
+		&pod.SKU, &pod.Quantity); err != nil {
 		return nil, err
 	}
-	for rows.Next() {
-		if err = rows.Scan(&pod.PodID, &pod.FlavorID, &pod.FlavorName,
-			&pod.SizeID, &pod.SizeName, &pod.SKU, &pod.Quantity); err != nil {
-			return nil, err
-		}
-	}
 
-	rows, err = db.Query(podQ+" WHERE Pod.FlavorID = ? AND Pod.SizeID = ? AND PodID != ?",
+	rows, err := db.Query(podQ+" WHERE Pod.FlavorID = ? AND Pod.SizeID = ? AND PodID != ?",
 		pod.FlavorID, pod.SizeID, pod.PodID)
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
+
 	for rows.Next() {
 		pod := new(Pod)
 		if err = rows.Scan(&pod.PodID, &pod.FlavorID, &pod.FlavorName,

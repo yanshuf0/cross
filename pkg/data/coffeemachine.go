@@ -28,6 +28,7 @@ func (db *DB) Machines(sizeID int) ([]CoffeeMachine, error) {
 	if err != nil {
 		return nil, err
 	}
+	rows.Close()
 	for rows.Next() {
 		m := new(CoffeeMachine)
 		if err = rows.Scan(&m.CoffeeMachineID, &m.SizeID, &m.SizeName, &m.SKU,
@@ -46,14 +47,16 @@ func (db *DB) CrossSellMachines(id int) ([]Pod, error) {
 	var pods []Pod
 
 	// Get the corresponding machine.
-	row := db.QueryRow(coffeeMachineQ+" where CoffeeMachineId = ?", id)
-	err := row.Scan(&machine.CoffeeMachineID, &machine.SizeID, &machine.SizeName,
-		&machine.SKU, &machine.ModelID, &machine.ModelName, &machine.WaterLine)
-	if err != nil {
+	if err := db.QueryRow(coffeeMachineQ+" where CoffeeMachineId = ?", id).
+		Scan(&machine.CoffeeMachineID, &machine.SizeID, &machine.SizeName,
+			&machine.SKU, &machine.ModelID, &machine.ModelName,
+			&machine.WaterLine); err != nil {
 		return nil, err
 	}
 
 	rows, err := db.Query(machineCrossQ, machine.SizeID)
+	defer rows.Close()
+
 	for rows.Next() {
 		pod := new(Pod)
 		if err = rows.Scan(&pod.PodID, &pod.FlavorID, &pod.FlavorName,
