@@ -51,8 +51,9 @@ func (db *DB) Pods(flavorID int, sizeID int) ([]Pod, error) {
 
 	for rows.Next() {
 		pod := new(Pod)
-		if err = rows.Scan(&pod.PodID, &pod.FlavorID, &pod.FlavorName,
-			&pod.SizeID, &pod.SizeName, &pod.SKU, &pod.Quantity); err != nil {
+		err = rows.Scan(&pod.PodID, &pod.FlavorID, &pod.FlavorName,
+			&pod.SizeID, &pod.SizeName, &pod.SKU, &pod.Quantity)
+		if err != nil {
 			return nil, err
 		}
 		pods = append(pods, *pod)
@@ -67,9 +68,10 @@ func (db *DB) CrossSellPods(id int) ([]Pod, error) {
 	var pods []Pod
 	var pod Pod
 
-	if err := db.QueryRow(podQ+" WHERE PodID = ?", id).Scan(&pod.PodID,
+	err := db.QueryRow(podQ+" WHERE PodID = ?", id).Scan(&pod.PodID,
 		&pod.FlavorID, &pod.FlavorName, &pod.SizeID, &pod.SizeName,
-		&pod.SKU, &pod.Quantity); err != nil {
+		&pod.SKU, &pod.Quantity)
+	if err != nil {
 		return nil, err
 	}
 
