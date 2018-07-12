@@ -64,7 +64,7 @@ export class AppComponent {
       if (!this.machineSizes.find(s => s.size_id === m.size_id)) {
         this.machineSizes.push({
           size_id: m.size_id,
-          size_name: m.size_name.toUpperCase(),
+          size_name: m.size_name,
           cols: 1,
           rows: 1
         });
